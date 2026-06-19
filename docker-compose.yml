@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    env_file:
+      - ./backend/.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+      - cargo_cache:/usr/local/cargo/registry
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+  cargo_cache:
