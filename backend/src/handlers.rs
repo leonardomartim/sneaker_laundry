@@ -3,17 +3,28 @@ use lettre::message::Mailbox;
 use lettre::{Address, AsyncTransport, Message};
 use crate::models::{FormData, ResponseData};
 use crate::AppState;
+use magic_crypt::{new_magic_crypt, MagicCryptTrait};
+use std::env;
 
 pub async fn handle_orcamento(
     form: web::Json<FormData>,
     state: web::Data<AppState>,
 ) -> impl Responder {
+
+    // 1. Criptografa o e-mail
+    let secret_key = env::var("ENCRYPTION_KEY")
+        .expect("Faltou a ENCRYPTION_KEY no .env");
+    let mc = new_magic_crypt!(secret_key, 256);
+    
+    let email_criptografado = mc.encrypt_str_to_base64(&form.email);
+
+    // 2. Salva no banco de dados usando o e-mail blindado
     let insert_result = sqlx::query(
         "INSERT INTO orcamentos (nome, sobrenome, email, cep, cidade, bairro, rua, numero, quantidade_pares) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
     )
     .bind(&form.nome)
     .bind(&form.sobrenome)
-    .bind(&form.email)
+    .bind(&email_criptografado)
     .bind(&form.cep)
     .bind(&form.cidade)
     .bind(&form.bairro)
@@ -30,6 +41,7 @@ pub async fn handle_orcamento(
         });
     }
 
+    // 3. Prepara o conteúdo do e-mail usando o e-mail original (limpo)
     let email_body = format!(
         "Nova Solicitação de Orçamento:\n\nNome: {} {}\nE-mail: {}\nCEP: {}\nCidade: {}\nBairro: {}\nRua: {}\nNúmero: {}\nQuantidade de Pares: {}",
         form.nome, form.sobrenome, form.email, form.cep, form.cidade, form.bairro, form.rua, form.numero, form.quantidade_pares
@@ -69,6 +81,7 @@ pub async fn handle_orcamento(
         admin_address,
     );
     
+    // 4. Monta e envia a mensagem
     let email = match Message::builder()
         .from(from_mailbox)
         .reply_to(client_mailbox)
