@@ -55,6 +55,7 @@ async fn main() -> std::io::Result<()> {
             bairro VARCHAR(100) NOT NULL,
             rua VARCHAR(255) NOT NULL,
             numero VARCHAR(50) NOT NULL,
+            quantidade_pares VARCHAR(50) NOT NULL,
             data_solicitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         "#,

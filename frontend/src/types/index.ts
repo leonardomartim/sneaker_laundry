@@ -7,4 +7,5 @@ export interface FormData {
   bairro: string;
   rua: string;
   numero: string;
+  quantidade_pares: string;
 }

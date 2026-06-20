@@ -43,6 +43,7 @@ export function OrcamentoForm() {
                 <input required type="text" name="cidade" value={formData.cidade} onChange={handleInputChange} className="mt-1 block w-full rounded-md border border-slate-300 p-3 bg-slate-50" readOnly />
               </div>
             </div>
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-slate-700">Bairro</label>
@@ -53,10 +54,25 @@ export function OrcamentoForm() {
                 <input required type="text" name="rua" value={formData.rua} onChange={handleInputChange} className="mt-1 block w-full rounded-md border border-slate-300 p-3 bg-slate-50" readOnly />
               </div>
             </div>
+
             <div>
               <label className="block text-sm font-medium text-slate-700">Número</label>
               <input required type="text" name="numero" value={formData.numero} onChange={handleInputChange} className="mt-1 block w-full rounded-md border border-slate-300 p-3" />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700">Quantidade de Pares</label>
+              <select name="quantidade_pares" value={formData.quantidade_pares} onChange={handleInputChange} className="mt-1 block w-full rounded-md border border-slate-300 p-3 bg-white outline-none focus:border-blue-600">
+                <option value="1 Par">1 Par</option>
+                <option value="2 Pares">2 Pares</option>
+                <option value="3 Pares">3 Pares</option>
+                <option value="4 Pares">4 Pares</option>
+                <option value="5 Pares">5 Pares</option>
+                <option value="6 a 9 Pares">6 a 9 Pares</option>
+                <option value="10 Pares ou +">10 Pares ou +</option>
+              </select>
+            </div>
+
             {submitStatus !== 'idle' && (
               <div
                 role="status"
@@ -69,6 +85,7 @@ export function OrcamentoForm() {
                 {statusMessage}
               </div>
             )}
+
             <button type="submit" disabled={isSubmitting} className="w-full py-3 px-4 rounded-md text-white bg-blue-600 hover:bg-blue-700 transition disabled:opacity-70 disabled:cursor-not-allowed">
               {isSubmitting ? 'Enviando...' : 'Enviar Solicitação'}
             </button>

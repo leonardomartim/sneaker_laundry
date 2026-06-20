@@ -10,6 +10,7 @@ pub struct FormData {
     pub bairro: String,
     pub rua: String,
     pub numero: String,
+    pub quantidade_pares: String,
 }
 
 #[derive(Serialize)]

@@ -10,7 +10,8 @@ export function useOrcamento() {
     cidade: '',
     bairro: '',
     rua: '',
-    numero: ''
+    numero: '',
+    quantidade_pares: '1 Par'
   });
 
   const [loadingCep, setLoadingCep] = useState(false);
@@ -19,7 +20,7 @@ export function useOrcamento() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [statusMessage, setStatusMessage] = useState('');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
@@ -38,7 +39,6 @@ export function useOrcamento() {
       return;
     }
 
-    setLoadingCep(true);
     try {
       const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
       const data = await response.json();
@@ -122,7 +122,7 @@ export function useOrcamento() {
       if (response.ok) {
         setSubmitStatus('success');
         setStatusMessage(data.mensagem || "Solicitação enviada com sucesso! Cheque seu e-mail.");
-        setFormData({ nome: '', sobrenome: '', email: '', cep: '', cidade: '', bairro: '', rua: '', numero: '' });
+        setFormData({ nome: '', sobrenome: '', email: '', cep: '', cidade: '', bairro: '', rua: '', numero: '', quantidade_pares: '1 Par' });
         setIsCepValid(false);
       } else {
         setSubmitStatus('error');
